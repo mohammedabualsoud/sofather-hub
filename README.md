@@ -45,13 +45,15 @@ If you are contributing to a project, please follow these guidelines:
 2. **Project Directory Naming:**
 
    - Create a new directory inside the `projects` directory for your point of interest project.
-   - Name the directory following this pattern: `<idea_name>_<github_username>`, where:
-     - `<idea_name>` matches the name of the project idea from the `/ideas` folder.
-     - `<github_username>` is your GitHub username.
+   - Use the following pattern: `/<idea_name>/<github_username>/`, where:
+     - `<idea_name>` directory matches the name of the project idea from the `/ideas` directory.
+     - `<github_username>` directory is your GitHub username.
 
-   For example, if you're implementing the project idea "build-a-calculator" and your GitHub username is "johndoe", the directory name would be `build-a-calculator_johndoe`.
+   For example, if you're implementing the project idea "build-a-calculator" and your GitHub username is "johndoe", the path would be `/projects/build-a-calculator/johndoe/`.
 
 3. **High-Level Diagram:** It is recommended to include a high-level diagram explaining your solution in the pull request description.
+
+4. **Ideas:** Use the markdown file(.md) format for presenting your project idea.
 
 ### Getting Started
 
