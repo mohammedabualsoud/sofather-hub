@@ -1,6 +1,8 @@
 const UserFactory = require("./UserFactory");
 
 class BudgetApp {
+  static _instance = null; // Declare the static property inside the class
+
   constructor() {
     if (BudgetApp._instance) {
       throw new Error(
@@ -33,6 +35,9 @@ class BudgetApp {
 
   deposit(userName, amount) {
     const user = this.users.find((user) => user.userName === userName);
+    if (amount <= 0) {
+      throw new Error("The amount you want to deposit must be positive");
+    }
 
     if (!user) {
       throw new Error("User doesn't exist");
@@ -68,7 +73,5 @@ class BudgetApp {
     return this.users.sort((a, b) => b.balance - a.balance).slice(0, n);
   }
 }
-
-BudgetApp._instance = null; // Initialize the static property
 
 module.exports = BudgetApp;

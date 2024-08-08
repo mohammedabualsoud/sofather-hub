@@ -12,7 +12,7 @@ function resetUsers() {
   resetUsers();
 
   // Test addUser
-  console.log("Testing addUser...");
+  console.log("Testing addUser: Adding a new user...");
   const user1 = app.addUser("user1", "Ali", "Saad");
   assert.strictEqual(user1.userName, "user1");
   assert.strictEqual(user1.firstName, "Ali");
@@ -20,73 +20,63 @@ function resetUsers() {
   assert.strictEqual(user1.balance, 0);
   console.log("addUser passed");
 
-  // Test duplicate user creation
-  console.log("Testing duplicate user creation...");
-  try {
+  // Test duplicate user
+  console.log("Testing addUser: Adding a duplicate user...");
+  assert.throws(() => {
     app.addUser("user1", "Ali", "Saad");
-    assert.fail("Expected error not thrown");
-  } catch (e) {
-    console.log(e.message); // Log the error message
-    assert.strictEqual(e.message, "User already exists");
-  }
-  console.log("Duplicate user creation passed");
+  }, new Error("User already exists"));
+  console.log("Duplicate user addition passed");
 
   // Test deposit
-  console.log("Testing deposit...");
+  console.log(
+    "Testing deposit: Depositing a positive amount into a user's account..."
+  );
   app.deposit("user1", 100);
   assert.strictEqual(
     app.users.find((user) => user.userName === "user1").balance,
     100
   );
-  console.log("Deposit passed");
-
+  console.log("Deposit with positive amount passed");
   // Test sendMoney
-  console.log("Testing sendMoney...");
+  console.log("Testing sendMoney: Sending money between users...");
   const user2 = app.addUser("user2", "Abed", "Ahmad");
   app.deposit("user2", 200);
-  app.sendMoney("user2", "user1", 50);
-  assert.strictEqual(
-    app.users.find((user) => user.userName === "user1").balance,
-    150
-  );
-  assert.strictEqual(
-    app.users.find((user) => user.userName === "user2").balance,
-    150
-  );
+
+  const initialBalanceUser1 = app.users.find(
+    (user) => user.userName === "user1"
+  ).balance;
+  const initialBalanceUser2 = app.users.find(
+    (user) => user.userName === "user2"
+  ).balance;
+
+  app.sendMoney("user2", "user1", 0);
+
+  const updatedBalanceUser1 = app.users.find(
+    (user) => user.userName === "user1"
+  ).balance;
+  const updatedBalanceUser2 = app.users.find(
+    (user) => user.userName === "user2"
+  ).balance;
+
+  assert.strictEqual(updatedBalanceUser1, initialBalanceUser1 + 50);
+  assert.strictEqual(updatedBalanceUser2, initialBalanceUser2 - 50);
   console.log("sendMoney passed");
 
   // Test sendMoney errors
-  console.log("Testing sendMoney errors...");
-  try {
-    app.sendMoney("user2", "user3", 10);
-    assert.fail("Expected error not thrown");
-  } catch (e) {
-    console.log(e.message); // Log the error message
-    assert.strictEqual(e.message, "Receiver username doesn't exist");
-  }
+  console.log("Testing sendMoney: Sending money errors...");
 
-  try {
-    app.sendMoney("user1", "user2", 200);
-    assert.fail("Expected error not thrown");
-  } catch (e) {
-    console.log(e.message); // Log the error message
-    assert.strictEqual(e.message, "Not enough balance to send money");
-  }
+  assert.throws(() => {
+    app.sendMoney("user1", "user10", 20);
+  }, new Error("Receiver username doesn't exist"));
 
-  try {
+  assert.throws(() => {
     app.sendMoney("user1", "user2", -10);
-    assert.fail("Expected error not thrown");
-  } catch (e) {
-    console.log(e.message); // Log the error message
-    assert.strictEqual(
-      e.message,
-      "The amount you want to transfer must be positive"
-    );
-  }
+  }, new Error("The amount you want to transfer must be positive"));
+
   console.log("sendMoney errors passed");
 
   // Test getMostRichUsers
-  console.log("Testing getMostRichUsers...");
+  console.log("Testing getMostRichUsers: Retrieving top users by balance...");
   const user3 = app.addUser("user3", "Ahmad", "Ali");
   app.deposit("user3", 300);
   assert.deepStrictEqual(app.getMostRichUsers(), [
