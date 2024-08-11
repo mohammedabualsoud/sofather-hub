@@ -1,3 +1,4 @@
+import BudgetManagementService from './BudgetManagementService.js'; 
 export default class User {
   constructor(userName, firstName, lastName) {
     this.userName = userName;
@@ -8,6 +9,10 @@ export default class User {
 
   setBalance(newBalance) {
     this.balance = newBalance;
+  }
+
+  setBalance(newBalance) {
+    this.#balance = newBalance;
   }
 
   getUsername() {
