@@ -18,16 +18,14 @@ export default class BudgetManagementService {
 
    addUser(userName, firstName, lastName) {
     const user = new User(userName, firstName, lastName);
-    if (this.users.get(userName)) console.log("User already exists");
-    else {
-      this.users.set(userName, user);
-      console.log("User added successfuly !");
-    }
+    if (this.users.get(userName)){ console.log("User already exists"); return;}
+    
+    this.users.set(userName, user);
+    console.log("User added successfuly !");
+    return user;
+    
   }
 
-  max(a,b){
-    return Math.max(a,b);
-  }
   deposit(username, amount) {
     const user = this.users.get(username);
 
