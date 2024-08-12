@@ -1,4 +1,4 @@
-import BudgetManagementService from './BudgetManagementService.js'; 
+import BudgetManagementService from "./BudgetManagementService.js";
 export default class User {
   constructor(userName, firstName, lastName) {
     this.userName = userName;
