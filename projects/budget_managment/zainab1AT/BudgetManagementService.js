@@ -21,7 +21,7 @@ export default class BudgetManagementService {
     if (this.users.get(userName)){ console.log("User already exists"); return;}
     
     this.users.set(userName, user);
-    console.log("User added successfuly !");
+    console.log("User added successfully!");
     return user;
     
   }
