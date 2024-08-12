@@ -24,9 +24,8 @@ Example Workflow:
 * Clone the repository:
 ``` git clone https://github.com/yourusername/budget-management-app.git ```
 
-* Install dependencies:
-Install the necessary packages by running:
-```npm install readline-sync```
+* Install the necessary packages by running:
+```npm install```
 
 * Run the application:
 
