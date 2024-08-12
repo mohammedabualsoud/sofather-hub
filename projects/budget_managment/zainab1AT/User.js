@@ -1,21 +1,15 @@
-import BudgetManagementService from './BudgetManagementService.js'; 
+import BudgetManagementService from "./BudgetManagementService.js";
 export default class User {
   #userName;
   #firstName;
   #lastName;
   #balance;
 
-  constructor(userName, firstName, lastName) {
-    if (BudgetManagementService.users.has(userName)) {
-      console.log("This username already exists");
-    } else {
-      this.#userName = userName;
-      this.#firstName = firstName;
-      this.#lastName = lastName;
-      this.#balance = 0;
-      BudgetManagementService.users.set(userName, this);
-      console.log("User added successfully!");
-    }
+   constructor(userName, firstName, lastName) {
+    this.#userName = userName;
+    this.#firstName = firstName;
+    this.#lastName = lastName;
+    this.#balance = 0;
   }
 
   setBalance(newBalance) {
