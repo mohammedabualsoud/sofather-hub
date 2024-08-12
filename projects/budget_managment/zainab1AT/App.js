@@ -29,8 +29,7 @@ while (!stop) {
       const username = readlineSync.question("Enter Username: ");
       const fname = readlineSync.question("Enter First Name: ");
       const lname = readlineSync.question("Enter Last Name: ");
-      new User(username, fname, lname);
-
+      BudgetManagement.addUser(username, fname, lname);
       readlineSync.question("Press Enter to continue...");
       break;
 
@@ -47,12 +46,8 @@ while (!stop) {
       console.clear();
       console.log("--- Transfer Money ---");
       const senderUsername = readlineSync.question("Enter Sender's Username: ");
-      const receiverUsername = readlineSync.question(
-        "Enter Receiver's Username: "
-      );
-      const transferAmount = parseFloat(
-        readlineSync.question("Enter Amount: ")
-      );
+      const receiverUsername = readlineSync.question("Enter Receiver's Username: ");
+      const transferAmount = parseFloat(readlineSync.question("Enter Amount: "));
       BudgetManagement.transfer(
         senderUsername,
         receiverUsername,
@@ -65,7 +60,7 @@ while (!stop) {
       console.clear();
       console.log("--- View User Information ---");
       const viewUsername = readlineSync.question("Enter Username: ");
-      console.log(BudgetManagementService.getUserByUsername(viewUsername));
+      console.log(BudgetManagement.getUserByUsername(viewUsername));
       readlineSync.question("Press Enter to continue...");
       break;
 
@@ -73,6 +68,7 @@ while (!stop) {
       console.clear();
       console.log("Thank you for using Budget Management! Goodbye!");
       stop = true;
+      
       break;
 
     default:

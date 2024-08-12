@@ -1,9 +1,9 @@
 import User from "./User.js";
 export default class BudgetManagementService {
-  static users = new Map();
+   users = new Map();
 
-  static getUserByUsername(userName) {
-    const user = BudgetManagementService.users.get(userName);
+   getUserByUsername(userName) {
+    const user = this.users.get(userName);
     if (user) {
       return {
         username: user.getUsername(),
@@ -16,8 +16,20 @@ export default class BudgetManagementService {
     }
   }
 
+   addUser(userName, firstName, lastName) {
+    const user = new User(userName, firstName, lastName);
+    if (this.users.get(userName)) console.log("User already exists");
+    else {
+      this.users.set(userName, user);
+      console.log("User added successfuly !");
+    }
+  }
+
+  max(a,b){
+    return Math.max(a,b);
+  }
   deposit(username, amount) {
-    const user = BudgetManagementService.users.get(username);
+    const user = this.users.get(username);
 
     if (!user) {
       console.log("User not found!");
@@ -34,13 +46,13 @@ export default class BudgetManagementService {
   }
 
   transfer(senderUsername, receiverUsername, amount) {
-    const sender = BudgetManagementService.users.get(senderUsername);
+    const sender = this.users.get(senderUsername);
     if (!sender) {
       console.log("Sender not found!");
       return;
     }
 
-    const receiver = BudgetManagementService.users.get(receiverUsername);
+    const receiver = this.users.get(receiverUsername);
     if (!receiver) {
       console.log("Receiver not found!");
       return;
