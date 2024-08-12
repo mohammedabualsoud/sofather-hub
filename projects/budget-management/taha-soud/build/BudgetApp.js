@@ -34,25 +34,27 @@ class BudgetApp {
         user.balance += amount;
     }
     sendMoney(fromUser, toUser, amount) {
-        const fromUserName = this.users.find(user => user.userName === fromUser);
-        const toUserName = this.users.find(user => user.userName === toUser);
-        if (!fromUserName) {
+        const from = this.users.find(user => user.userName === fromUser);
+        const to = this.users.find(user => user.userName === toUser);
+        if (!from) {
             throw new Error("Sender username doesn't exist");
         }
-        if (!toUserName) {
+        if (!to) {
             throw new Error("Receiver username doesn't exist");
         }
         if (amount <= 0) {
             throw new Error("Invalid amount");
         }
-        if (fromUserName.balance < amount) {
+        if (from.balance < amount) {
             throw new Error("Not enough balance to send transfer money");
         }
-        fromUserName.balance -= amount;
-        toUserName.balance += amount;
+        from.balance -= amount;
+        to.balance += amount;
     }
     getMostRichUsers(n = 3) {
-        return this.users.sort((a, b) => b.balance - a.balance).slice(0, n);
+        return this.users
+            .sort((a, b) => b.balance - a.balance)
+            .slice(0, n);
     }
     getUsers() {
         return this.users;

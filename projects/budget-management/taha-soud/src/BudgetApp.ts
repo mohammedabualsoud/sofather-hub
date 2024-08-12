@@ -34,32 +34,34 @@ class BudgetApp {
     if (amount <= 0) {
       throw new Error("Invalid amount");
     }
-    user.balance += amount;
+    user.balance += amount;  // Using the setter in User class
   }
 
   public sendMoney(fromUser: string, toUser: string, amount: number): void {
-    const fromUserName = this.users.find(user => user.userName === fromUser);
-    const toUserName= this.users.find(user => user.userName === toUser);
+    const from = this.users.find(user => user.userName === fromUser);
+    const to = this.users.find(user => user.userName === toUser);
 
-    if (!fromUserName) {
+    if (!from) {
       throw new Error("Sender username doesn't exist");
     }
-    if (!toUserName) {
+    if (!to) {
       throw new Error("Receiver username doesn't exist");
     }
     if (amount <= 0) {
       throw new Error("Invalid amount");
     }
-    if (fromUserName.balance < amount) {
+    if (from.balance < amount) {
       throw new Error("Not enough balance to send transfer money");
     }
 
-    fromUserName.balance -= amount;
-    toUserName.balance += amount;
+    from.balance -= amount;  // Using the setter in User class
+    to.balance += amount;    // Using the setter in User class
   }
 
-  getMostRichUsers(n = 3) {
-    return this.users.sort((a, b) => b.balance - a.balance).slice(0, n);
+  public getMostRichUsers(n = 3): User[] {
+    return this.users
+      .sort((a, b) => b.balance - a.balance)
+      .slice(0, n);
   }
 
   public getUsers(): User[] {

@@ -65,7 +65,6 @@ const app = BudgetApp.getInstance();
 
   console.log('sendMoney errors passed');
 
-  // Test getMostRichUsers
   console.log('Testing getMostRichUsers: Retrieving top users by balance...');
   const user3 = app.addUser('user3', 'Ahmad', 'Ali', 300);
 
