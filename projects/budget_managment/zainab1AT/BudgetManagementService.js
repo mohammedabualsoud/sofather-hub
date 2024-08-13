@@ -56,7 +56,12 @@ export default class BudgetManagementService {
       return;
     }
 
-    if (typeof amount !== "number" || amount <= 0) {
+    if (typeof amount !== "number") {
+      console.log("Please enter a valid amount.");
+      return;
+    }
+
+    if(amount < 0){
       console.log("Please enter a valid amount.");
       return;
     }

@@ -1,34 +1,34 @@
 import BudgetManagementService from "./BudgetManagementService.js";
 export default class User {
-  #userName;
-  #firstName;
-  #lastName;
-  #balance;
+  userName;
+  firstName;
+  lastName;
+  balance;
 
    constructor(userName, firstName, lastName) {
-    this.#userName = userName;
-    this.#firstName = firstName;
-    this.#lastName = lastName;
-    this.#balance = 0;
+    this.userName = userName;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.balance = 0;
   }
 
   setBalance(newBalance) {
-    this.#balance = newBalance;
+    this.balance = newBalance;
   }
 
   getUsername() {
-    return this.#userName;
+    return this.userName;
   }
 
   getFirstname() {
-    return this.#firstName;
+    return this.firstName;
   }
 
   getLastname() {
-    return this.#lastName;
+    return this.lastName;
   }
 
   getBalance() {
-    return this.#balance;
+    return this.balance;
   }
 }

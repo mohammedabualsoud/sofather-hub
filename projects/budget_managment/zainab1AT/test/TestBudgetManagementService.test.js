@@ -130,17 +130,18 @@ describe("Transfer", () => {
     const service = new BudgetManagementService();
 
     const sender = service.addUser("zainabat", "zainab", "atwa");
+    const receiver = service.addUser("ali", "ali", "atwa");
 
     const initValue = 50000;
     sender.setBalance(initValue);
 
     console.log = vi.fn();
 
-    service.transfer("zainabat", "ali", 2000);
-    expect(console.log).toHaveBeenCalledWith("Receiver not found!");
+    service.transfer("zainabat", "ali", -100);
+    expect(console.log).toHaveBeenCalledWith("Please enter a valid amount.");
   });
 
-  it("If the amount less than the balance ", () => {
+  it("If the amount greater than the balance ", () => {
     const service = new BudgetManagementService();
 
     const sender = service.addUser("zainabat", "zainab", "atwa");
@@ -151,7 +152,7 @@ describe("Transfer", () => {
 
     console.log = vi.fn();
 
-    service.transfer("zainabat", "ali", 2000);
+    service.transfer("zainabat", "ali", 5000);
     expect(console.log).toHaveBeenCalledWith(
       "Insufficient balance for the transfer."
     );
