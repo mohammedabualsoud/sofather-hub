@@ -1,4 +1,3 @@
-import BudgetManagementService from "./BudgetManagementService.js";
 export default class User {
   #userName;
   #firstName;
