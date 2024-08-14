@@ -5,77 +5,49 @@ export default class BudgetManagementService {
   }
   getUserByUsername(userName) {
     const user = this.users.get(userName);
-    if (user) {
-      return {
-        username: user.getUsername(),
-        firstName: user.getFirstname(),
-        lastName: user.getLastname(),
-        balance: user.getBalance(),
-      };
-    } else {
-      console.log("This User not found !");
-    }
+    if (user) return user;
+    else throw new Error("This User not found !");
   }
 
   addUser(userName, firstName, lastName) {
     const user = new User(userName, firstName, lastName);
-    if (this.users.get(userName)) {
-      console.log("User already exists");
-      return;
-    }
+    if (this.users.get(userName)) throw new Error("User already exists");
 
     this.users.set(userName, user);
-    console.log("User added successfully!");
     return user;
   }
 
   deposit(username, amount) {
     const user = this.users.get(username);
 
-    if (!user) {
-      console.log("User not found!");
-      return;
-    }
+    if (!user) 
+      throw new Error("User not found!");
 
-    if (typeof amount !== "number" || amount <= 0) {
-      console.log("Invalid amount. Please enter a positive number.");
-      return;
-    }
+    if (typeof amount !== "number" || amount <= 0) 
+      throw new Error("Invalid amount. Please enter a positive number.");
 
     user.setBalance(user.getBalance() + amount);
-    console.log("Deposit successful!");
   }
 
   transfer(senderUsername, receiverUsername, amount) {
     const sender = this.users.get(senderUsername);
-    if (!sender) {
-      console.log("Sender not found!");
-      return;
-    }
+    if (!sender) 
+      throw new Error("Sender not found!");
 
     const receiver = this.users.get(receiverUsername);
-    if (!receiver) {
-      console.log("Receiver not found!");
-      return;
-    }
+    if (!receiver) 
+      throw new Error("Receiver not found!");
 
-    if (typeof amount !== "number") {
-      console.log("Please enter a valid amount.");
-      return;
-    }
+    if (typeof amount !== "number") 
+      throw new Error("Please enter a valid amount.");
 
-    if (amount < 0) {
-      console.log("Please enter a valid amount.");
-      return;
-    }
+    if (amount < 0) 
+      throw new Error("Please enter a valid amount.");
 
-    if (amount > sender.getBalance()) {
-      console.log("Insufficient balance for the transfer.");
-      return;
-    }
+    if (amount > sender.getBalance()) 
+     throw new Error("Insufficient balance for the transfer.");
 
     sender.setBalance(sender.getBalance() - amount);
     receiver.setBalance(receiver.getBalance() + amount);
-    console.log("Transfer successful!");
   }
 }

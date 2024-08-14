@@ -27,7 +27,13 @@ while (!stop) {
       const username = readlineSync.question("Enter Username: ");
       const fname = readlineSync.question("Enter First Name: ");
       const lname = readlineSync.question("Enter Last Name: ");
-      BudgetManagement.addUser(username, fname, lname);
+
+      try {
+        BudgetManagement.addUser(username, fname, lname);
+        console.log("User added successfully!");
+      } catch (error) {
+        console.log(`Error: ${error.message}`);
+      }
       readlineSync.question("Press Enter to continue...");
       break;
 
@@ -36,7 +42,14 @@ while (!stop) {
       console.log("--- Deposit Money ---");
       const depositUsername = readlineSync.question("Enter Username: ");
       const depositAmount = parseFloat(readlineSync.question("Enter Amount: "));
-      BudgetManagement.deposit(depositUsername, depositAmount);
+      try {
+        BudgetManagement.deposit(depositUsername, depositAmount);
+        console.log(
+          `Deposit successful! ${depositAmount} has been added to ${depositUsername}'s account.`
+        );
+      } catch (error) {
+        console.log(`Error: ${error.message}`);
+      }
       readlineSync.question("Press Enter to continue...");
       break;
 
@@ -44,21 +57,37 @@ while (!stop) {
       console.clear();
       console.log("--- Transfer Money ---");
       const senderUsername = readlineSync.question("Enter Sender's Username: ");
-      const receiverUsername = readlineSync.question("Enter Receiver's Username: ");
-      const transferAmount = parseFloat(readlineSync.question("Enter Amount: "));
-      BudgetManagement.transfer(
-        senderUsername,
-        receiverUsername,
-        transferAmount
+      const receiverUsername = readlineSync.question(
+        "Enter Receiver's Username: "
       );
-      readlineSync.question('Press Enter to continue...');
+      const transferAmount = parseFloat(
+        readlineSync.question("Enter Amount: ")
+      );
+
+      try {
+        BudgetManagement.transfer(
+          senderUsername,
+          receiverUsername,
+          transferAmount
+        );
+        console.log(
+          `Transfer successful! ${transferAmount} has been transferred from ${senderUsername} to ${receiverUsername}.`
+        );
+      } catch (error) {
+        console.log(`Error: ${error.message}`);
+      }
+      readlineSync.question("Press Enter to continue...");
       break;
 
     case "4":
       console.clear();
       console.log("--- View User Information ---");
       const viewUsername = readlineSync.question("Enter Username: ");
-      console.log(BudgetManagement.getUserByUsername(viewUsername));
+      try {
+        console.log(BudgetManagement.getUserByUsername(viewUsername));
+      } catch (error) {
+        console.log(`Error: ${error.message}`);
+      }
       readlineSync.question("Press Enter to continue...");
       break;
 
@@ -66,7 +95,7 @@ while (!stop) {
       console.clear();
       console.log("Thank you for using Budget Management! Goodbye!");
       stop = true;
-      
+
       break;
 
     default:

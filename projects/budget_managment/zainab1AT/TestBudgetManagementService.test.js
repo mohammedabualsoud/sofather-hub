@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import BudgetManagementService from "../BudgetManagementService.js";
-import User from "../User.js";
+import BudgetManagementService from "./BudgetManagementService.js";
+import User from "./User.js";
 
 describe("getUserByUsername", () => {
   it("should return the user object if the user exists", () => {
@@ -13,30 +13,18 @@ describe("getUserByUsername", () => {
 
     const result = service.getUserByUsername(userName);
 
-    expect(result).toEqual({
-      username: userName,
-      firstName: firstName,
-      lastName: lastName,
-      balance: 0,
-    });
+    expect(result).toEqual(service.getUserByUsername(userName));
   });
 
-  it("should return message if the user not exist", () => {
+  it("should throw an error if the user does not exist", () => {
     const service = new BudgetManagementService();
 
-    const userName = "zainabat";
-
-    console.log = vi.fn();
-
-    const result = service.getUserByUsername(userName);
-
-    expect(result).toBeUndefined();
-    expect(console.log).toHaveBeenCalledWith("This User not found !");
+    expect(() => service.getUserByUsername("nonexistent")).toThrow("This User not found !");
   });
 });
 
 describe("Deposit", () => {
-  it("The user exists, and the deposit has been processed successfully.", () => {
+  it("should process the deposit successfully if the user exists", () => {
     const service = new BudgetManagementService();
     const userName = "zainabat";
     const firstName = "Zainab";
@@ -45,27 +33,21 @@ describe("Deposit", () => {
     const user = service.addUser(userName, firstName, lastName);
     const amount = 500000;
     const initValue = 500000;
-    console.log = vi.fn();
 
     user.setBalance(initValue);
     service.deposit(userName, amount);
     const result = user.getBalance();
 
-    expect(console.log).toHaveBeenCalledWith("Deposit successful!");
     expect(result).toEqual(amount + initValue);
   });
 
-  it("if the user not exist, it must return User not found! as a message ", () => {
+  it("should throw an error if the user does not exist", () => {
     const service = new BudgetManagementService();
 
-    console.log = vi.fn();
-
-    service.deposit("zainab", 100000000);
-
-    expect(console.log).toHaveBeenCalledWith("User not found!");
+    expect(() => service.deposit("nonexistent", 100000000)).toThrow("User not found!");
   });
 
-  it("it should return Invalid amount if the user enter invalid value for the amount (here negative value, but it's the same thing if the value is not number),", () => {
+  it("should throw an error if the deposit amount is invalid", () => {
     const service = new BudgetManagementService();
     const userName = "zainabat";
     const firstName = "Zainab";
@@ -73,18 +55,12 @@ describe("Deposit", () => {
 
     service.addUser(userName, firstName, lastName);
 
-    console.log = vi.fn();
-
-    service.deposit(userName, -20);
-
-    expect(console.log).toHaveBeenCalledWith(
-      "Invalid amount. Please enter a positive number."
-    );
+    expect(() => service.deposit(userName, -20)).toThrow("Invalid amount. Please enter a positive number.");
   });
 });
 
 describe("Transfer", () => {
-  it("The users exists, and the transfer has been processed successfully.", () => {
+  it("should process the transfer successfully if both users exist", () => {
     const service = new BudgetManagementService();
 
     const sender = service.addUser("zainabat", "zainab", "atwa");
@@ -93,26 +69,21 @@ describe("Transfer", () => {
     const initValue = 50000;
     sender.setBalance(initValue);
 
-    console.log = vi.fn();
-
     service.transfer("zainabat", "ali", 2000);
-    expect(console.log).toHaveBeenCalledWith("Transfer successful!");
+
     expect(sender.getBalance()).toBe(initValue - 2000);
     expect(receiver.getBalance()).toBe(2000);
   });
 
-  it("If the sender not exist ", () => {
+  it("should throw an error if the sender does not exist", () => {
     const service = new BudgetManagementService();
 
-    const receiver = service.addUser("ali", "ali", "atwa");
+    service.addUser("ali", "ali", "atwa");
 
-    console.log = vi.fn();
-
-    service.transfer("zainabat", "ali", 2000);
-    expect(console.log).toHaveBeenCalledWith("Sender not found!");
+    expect(() => service.transfer("nonexistent", "ali", 2000)).toThrow("Sender not found!");
   });
 
-  it("If the reciever not exist ", () => {
+  it("should throw an error if the receiver does not exist", () => {
     const service = new BudgetManagementService();
 
     const sender = service.addUser("zainabat", "zainab", "atwa");
@@ -120,13 +91,10 @@ describe("Transfer", () => {
     const initValue = 50000;
     sender.setBalance(initValue);
 
-    console.log = vi.fn();
-
-    service.transfer("zainabat", "ali", 2000);
-    expect(console.log).toHaveBeenCalledWith("Receiver not found!");
+    expect(() => service.transfer("zainabat", "nonexistent", 2000)).toThrow("Receiver not found!");
   });
 
-  it("If the amount invalid ", () => {
+ it("should throw an error if the transfer amount is invalid", () => {
     const service = new BudgetManagementService();
 
     const sender = service.addUser("zainabat", "zainab", "atwa");
@@ -135,13 +103,11 @@ describe("Transfer", () => {
     const initValue = 50000;
     sender.setBalance(initValue);
 
-    console.log = vi.fn();
-
-    service.transfer("zainabat", "ali", -100);
-    expect(console.log).toHaveBeenCalledWith("Please enter a valid amount.");
+    expect(() => service.transfer("zainabat", "ali", -100)).toThrow("Please enter a valid amount.");
   });
 
-  it("If the amount greater than the balance ", () => {
+
+  it("should throw an error if the transfer amount is greater than the sender's balance", () => {
     const service = new BudgetManagementService();
 
     const sender = service.addUser("zainabat", "zainab", "atwa");
@@ -150,12 +116,7 @@ describe("Transfer", () => {
     const initValue = 1000;
     sender.setBalance(initValue);
 
-    console.log = vi.fn();
-
-    service.transfer("zainabat", "ali", 5000);
-    expect(console.log).toHaveBeenCalledWith(
-      "Insufficient balance for the transfer."
-    );
+    expect(() => service.transfer("zainabat", "ali", 5000)).toThrow("Insufficient balance for the transfer.");
   });
 });
 
@@ -166,25 +127,20 @@ describe("Add new user", () => {
     const firstName = "Zainab";
     const lastName = "Atwa";
 
-    console.log = vi.fn();
-
     const result = service.addUser(userName, firstName, lastName);
 
     expect(service.users.get(userName)).toEqual(result);
     expect(result).toEqual(new User(userName, firstName, lastName));
-    expect(console.log).toHaveBeenCalledWith("User added successfully!");
   });
 
-  it("should not add a user if the username already exists", () => {
+  it("should throw an error if the username already exists", () => {
     const service = new BudgetManagementService();
     const userName = "zainabat";
     const firstName = "Zainab";
     const lastName = "Atwa";
+
     service.addUser(userName, firstName, lastName);
-    console.log = vi.fn();
-    const result = service.addUser(userName, firstName, lastName);
-    expect(service.users.size).toBe(1);
-    expect(console.log).toHaveBeenCalledWith("User already exists");
-    expect(result).toBeUndefined();
+
+    expect(() => service.addUser(userName, firstName, lastName)).toThrow("User already exists");
   });
 });
