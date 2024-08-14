@@ -1,8 +1,9 @@
 import User from "./User.js";
 export default class BudgetManagementService {
-   users = new Map();
-
-   getUserByUsername(userName) {
+  constructor() {
+    this.users = new Map();
+  }
+  getUserByUsername(userName) {
     const user = this.users.get(userName);
     if (user) {
       return {
@@ -16,14 +17,16 @@ export default class BudgetManagementService {
     }
   }
 
-   addUser(userName, firstName, lastName) {
+  addUser(userName, firstName, lastName) {
     const user = new User(userName, firstName, lastName);
-    if (this.users.get(userName)){ console.log("User already exists"); return;}
-    
+    if (this.users.get(userName)) {
+      console.log("User already exists");
+      return;
+    }
+
     this.users.set(userName, user);
     console.log("User added successfully!");
     return user;
-    
   }
 
   deposit(username, amount) {
@@ -61,7 +64,7 @@ export default class BudgetManagementService {
       return;
     }
 
-    if(amount < 0){
+    if (amount < 0) {
       console.log("Please enter a valid amount.");
       return;
     }

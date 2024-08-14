@@ -1,6 +1,4 @@
 import BudgetManagementService from "./BudgetManagementService.js";
-
-import User from "./User.js";
 import readlineSync from "readline-sync";
 
 let stop = false;
@@ -53,7 +51,7 @@ while (!stop) {
         receiverUsername,
         transferAmount
       );
-      readlineSync.question("Press Enter to continue...");
+      readlineSync.question('Press Enter to continue...');
       break;
 
     case "4":
