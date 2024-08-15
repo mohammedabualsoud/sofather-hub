@@ -3,10 +3,10 @@ import User from "./User";
 
 class BudgetApp {
   private static _instance: BudgetApp | null = null;
-  private users: User[];
+  private _users: User[];
 
   private constructor() {
-    this.users = [];
+    this._users = [];
     BudgetApp._instance = this;
   }
 
@@ -17,29 +17,34 @@ class BudgetApp {
     return BudgetApp._instance;
   }
 
-  public addUser(userName: string, firstName: string, lastName: string, balance: number): User {
-    if (this.users.find(user => user.userName === userName)) {
+  public addUser(
+    userName: string,
+    firstName: string,
+    lastName: string,
+    balance: number
+  ): User {
+    if (this._users.find((user) => user.userName === userName)) {
       throw new Error("User already exists");
     }
     const user = UserFactory.createUser(userName, firstName, lastName, balance);
-    this.users.push(user);
+    this._users.push(user);
     return user;
   }
 
   public deposit(userName: string, amount: number): void {
-    const user = this.users.find(user => user.userName === userName);
+    const user = this._users.find((user) => user.userName === userName);
     if (!user) {
       throw new Error("User not found");
     }
     if (amount <= 0) {
       throw new Error("Invalid amount");
     }
-    user.balance += amount;  // Using the setter in User class
+    user.balance += amount;
   }
 
   public sendMoney(fromUser: string, toUser: string, amount: number): void {
-    const from = this.users.find(user => user.userName === fromUser);
-    const to = this.users.find(user => user.userName === toUser);
+    const from = this._users.find((user) => user.userName === fromUser);
+    const to = this._users.find((user) => user.userName === toUser);
 
     if (!from) {
       throw new Error("Sender username doesn't exist");
@@ -54,22 +59,20 @@ class BudgetApp {
       throw new Error("Not enough balance to send transfer money");
     }
 
-    from.balance -= amount;  // Using the setter in User class
-    to.balance += amount;    // Using the setter in User class
+    from.balance -= amount;
+    to.balance += amount;
   }
 
   public getMostRichUsers(n = 3): User[] {
-    return this.users
-      .sort((a, b) => b.balance - a.balance)
-      .slice(0, n);
+    return this._users.sort((a, b) => b.balance - a.balance).slice(0, n);
   }
 
   public getUsers(): User[] {
-    return this.users;
+    return this._users;
   }
 
   public resetUsers(): void {
-    this.users = [];
+    this._users = [];
   }
 }
 
