@@ -1,38 +1,53 @@
-import UserFactory from "./UserFactory";
-import User from "./User";
+import { DataSource, Repository } from "typeorm";
+import { User } from "./entity/User.js";
+import ormconfig from "./config/ormconfig.json" assert { type: "json" };
+import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
 
 class BudgetApp {
   private static _instance: BudgetApp | null = null;
-  private _users: User[];
+  private _dataSource: DataSource;
+  private _userRepository: Repository<User>;
 
-  private constructor() {
-    this._users = [];
-    BudgetApp._instance = this;
+  private constructor(dataSource: DataSource) {
+    this._dataSource = dataSource;
+    this._userRepository = this._dataSource.getRepository(User);
   }
 
-  public static getInstance(): BudgetApp {
+  public static async getInstance(): Promise<BudgetApp> {
     if (!BudgetApp._instance) {
-      BudgetApp._instance = new BudgetApp();
+      const dataSource = new DataSource({
+        ...(ormconfig as PostgresConnectionOptions),
+        entities: [User], // Explicitly include the User entity
+      });
+
+      await dataSource.initialize();
+      BudgetApp._instance = new BudgetApp(dataSource);
     }
     return BudgetApp._instance;
   }
 
-  public addUser(
+  public async addUser(
     userName: string,
     firstName: string,
     lastName: string,
     balance: number
-  ): User {
-    if (this._users.find((user) => user.userName === userName)) {
+  ): Promise<User> {
+    const existingUser = await this._userRepository.findOneBy({ userName });
+    if (existingUser) {
       throw new Error("User already exists");
     }
-    const user = UserFactory.createUser(userName, firstName, lastName, balance);
-    this._users.push(user);
+    const user = this._userRepository.create({
+      userName,
+      firstName,
+      lastName,
+      balance,
+    });
+    await this._userRepository.save(user);
     return user;
   }
 
-  public deposit(userName: string, amount: number): void {
-    const user = this._users.find((user) => user.userName === userName);
+  public async deposit(userName: string, amount: number): Promise<void> {
+    const user = await this._userRepository.findOneBy({ userName });
     if (!user) {
       throw new Error("User not found");
     }
@@ -40,39 +55,55 @@ class BudgetApp {
       throw new Error("Invalid amount");
     }
     user.balance += amount;
+    await this._userRepository.save(user);
   }
 
-  public sendMoney(fromUser: string, toUser: string, amount: number): void {
-    const from = this._users.find((user) => user.userName === fromUser);
-    const to = this._users.find((user) => user.userName === toUser);
-
-    if (!from) {
-      throw new Error("Sender username doesn't exist");
+  public async sendMoney(
+    fromUser: string,
+    toUser: string,
+    amount: number
+  ): Promise<void> {
+    const fromUserEntity = await this._userRepository.findOneBy({
+      userName: fromUser,
+    });
+    const toUserEntity = await this._userRepository.findOneBy({
+      userName: toUser,
+    });
+    if (!fromUserEntity) {
+      throw new Error("Sender not found");
     }
-    if (!to) {
-      throw new Error("Receiver username doesn't exist");
+    if (!toUserEntity) {
+      throw new Error("Receiver not found");
     }
     if (amount <= 0) {
       throw new Error("Invalid amount");
     }
-    if (from.balance < amount) {
-      throw new Error("Not enough balance to send transfer money");
+    if (fromUserEntity.balance < amount) {
+      throw new Error("Insufficient balance");
     }
 
-    from.balance -= amount;
-    to.balance += amount;
+    fromUserEntity.balance -= amount;
+    toUserEntity.balance += amount;
+
+    await this._userRepository.save(fromUserEntity);
+    await this._userRepository.save(toUserEntity);
   }
 
-  public getMostRichUsers(n = 3): User[] {
-    return this._users.sort((a, b) => b.balance - a.balance).slice(0, n);
+  public async getMostRichUsers(n = 3): Promise<User[]> {
+    const users = await this._userRepository.find({
+      order: { balance: "DESC" },
+      take: n,
+    });
+    return users;
   }
 
-  public getUsers(): User[] {
-    return this._users;
+  public async getUsers(): Promise<User[]> {
+    const users = await this._userRepository.find();
+    return users;
   }
 
-  public resetUsers(): void {
-    this._users = [];
+  public async resetUsers(): Promise<void> {
+    await this._userRepository.clear();
   }
 }
 

@@ -1,0 +1,8 @@
+{
+  "name": "taha-v2",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node build/TestBudgetApp.js"
+  }
+}
