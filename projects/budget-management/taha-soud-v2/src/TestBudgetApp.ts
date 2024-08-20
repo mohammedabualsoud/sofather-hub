@@ -16,6 +16,20 @@ async function testBudgetApp() {
   assert.strictEqual(user1.balance, 0);
   console.log("addUser passed");
 
+  // Test adding a duplicate user
+  console.log("Testing addUser: Adding a duplicate user...");
+  try {
+    await app.addUser("user1", "Ali", "Saad", 0);
+    assert.fail("Duplicate user1 was added, but should have failed.");
+  } catch (error) {
+    assert.strictEqual(
+      error.message,
+      "User already exists",
+      "Expected 'User already exists' error message"
+    );
+    console.log("Duplicate user addition passed");
+  }
+
   console.log("Testing addUser: Adding user2...");
   const user2 = await app.addUser("user2", "Abed", "Ahmad", 250);
   assert(user2, "User2 was not added!");
@@ -26,7 +40,13 @@ async function testBudgetApp() {
   const updatedUser1 = (await app.getUsers()).find(
     (user) => user.userName === "user1"
   );
-  assert.strictEqual(updatedUser1?.balance, 100, "Deposit failed!");
+  assert.strictEqual(
+    updatedUser1 === null || updatedUser1 === void 0
+      ? void 0
+      : updatedUser1.balance,
+    100,
+    "Deposit failed!"
+  );
   console.log("Deposit passed");
 
   console.log("Testing sendMoney: Sending money from user2 to user1...");
@@ -38,16 +58,49 @@ async function testBudgetApp() {
     (user) => user.userName === "user2"
   );
   assert.strictEqual(
-    updatedUser1AfterTransfer?.balance,
+    updatedUser1AfterTransfer === null || updatedUser1AfterTransfer === void 0
+      ? void 0
+      : updatedUser1AfterTransfer.balance,
     150,
     "Transfer failed for user1!"
   );
   assert.strictEqual(
-    updatedUser2AfterTransfer?.balance,
+    updatedUser2AfterTransfer === null || updatedUser2AfterTransfer === void 0
+      ? void 0
+      : updatedUser2AfterTransfer.balance,
     200,
     "Transfer failed for user2!"
   );
   console.log("sendMoney passed");
+
+  // Test sendMoney errors
+  console.log("Testing sendMoney: Sending money errors...");
+
+  try {
+    await app.sendMoney("user1", "user10", 20);
+    assert.fail("Sending money to a non-existent user should have failed.");
+  } catch (error) {
+    assert.strictEqual(
+      error.message,
+      "Receiver not found",
+      "Expected 'Receiver not found' error message"
+    );
+    console.log("Sending money to non-existent user failed as expected");
+  }
+
+  try {
+    await app.sendMoney("user1", "user2", -10);
+    assert.fail("Sending a negative amount should have failed.");
+  } catch (error) {
+    assert.strictEqual(
+      error.message,
+      "Invalid amount",
+      "Expected 'Invalid amount' error message"
+    );
+    console.log("Sending a negative amount failed as expected");
+  }
+
+  console.log("sendMoney errors passed");
 
   console.log("Testing getMostRichUsers: Retrieving top users by balance...");
   const user3 = await app.addUser("user3", "Ahmad", "Ali", 300);
