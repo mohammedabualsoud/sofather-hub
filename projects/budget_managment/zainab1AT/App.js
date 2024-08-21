@@ -29,10 +29,10 @@ while (!stop) {
       const lname = readlineSync.question("Enter Last Name: ");
 
       try {
-        BudgetManagement.addUser(username, fname, lname);
+        await BudgetManagement.addUser(username, fname, lname);
         console.log("User added successfully!");
       } catch (error) {
-        console.log(`Error: ${error.message}`);
+        console.log(`Error: ${error}`);
       }
       readlineSync.question("Press Enter to continue...");
       break;
@@ -83,8 +83,9 @@ while (!stop) {
       console.clear();
       console.log("--- View User Information ---");
       const viewUsername = readlineSync.question("Enter Username: ");
+      const u = await BudgetManagement.getUserByUsername(viewUsername);
       try {
-        console.log(BudgetManagement.getUserByUsername(viewUsername));
+        console.log(u);
       } catch (error) {
         console.log(`Error: ${error.message}`);
       }
