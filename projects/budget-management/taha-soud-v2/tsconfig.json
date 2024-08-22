@@ -18,6 +18,7 @@
     "allowSyntheticDefaultImports": true, // Allows default imports from modules that don’t have default exports
     "strictPropertyInitialization": false // Disables strict property initialization checking
   },
-  "include": ["src/**/*"], // Includes all TypeScript files in the src directory
+  "include": ["src/**/*", "../.env"],
+
   "exclude": ["node_modules", "build"] // Excludes node_modules and build directories
 }

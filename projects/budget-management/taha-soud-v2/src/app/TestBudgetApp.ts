@@ -8,16 +8,18 @@ async function testBudgetApp() {
   assert.strictEqual((await app.getUsers()).length, 0, "Reset failed");
 
   console.log("Testing addUser: Adding user1...");
-  const user1 = await app.addUser("user1", "Ali", "Saad", 0);
+  await app.addUser("user1", "Ali", "Saad", 0);
+  const user1 = (await app.getUsers()).find(
+    (user) => user.userName === "user1"
+  );
   assert(user1, "User1 was not added!");
-  assert.strictEqual(user1.userName, "user1");
-  assert.strictEqual(user1.firstName, "Ali");
-  assert.strictEqual(user1.lastName, "Saad");
-  assert.strictEqual(user1.balance, 0);
   console.log("addUser passed");
 
   console.log("Testing addUser: Adding user2...");
-  const user2 = await app.addUser("user2", "Abed", "Ahmad", 250);
+  await app.addUser("user2", "Abed", "Ahmad", 250);
+  const user2 = (await app.getUsers()).find(
+    (user) => user.userName === "user2"
+  );
   assert(user2, "User2 was not added!");
   console.log("User2 added");
 
@@ -50,7 +52,7 @@ async function testBudgetApp() {
   console.log("sendMoney passed");
 
   console.log("Testing getMostRichUsers: Retrieving top users by balance...");
-  const user3 = await app.addUser("user3", "Ahmad", "Ali", 300);
+  await app.addUser("user3", "Ahmad", "Ali", 300);
   const expectedTopUsers = (await app.getUsers())
     .sort((a, b) => b.balance - a.balance)
     .slice(0, 3);

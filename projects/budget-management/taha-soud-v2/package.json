@@ -1,8 +1,16 @@
 {
-  "name": "taha-v2",
+  "name": "budget-management",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "start": "node build/TestBudgetApp.js"
+    "build": "tsc",
+    "start": "npm run build && node build/app/TestBudgetApp.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.6",
+    "typescript": "^5.1.3"
   }
 }
