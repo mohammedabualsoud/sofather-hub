@@ -28,3 +28,4 @@ export class User {
     this.balance = balance;
   }
 }
+export default User;
