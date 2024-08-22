@@ -11,7 +11,7 @@ export default class BudgetManagementService {
       const user = await this.DALInstanse.getUserByUsernameQuery(userName);
       return user;
   }
-
+  // error: when I add user already exist it print "added successfully " in App.js
   async addUser(userName, firstName, lastName) {
       await this.DALInstanse.upsertQuery(userName, firstName, lastName);
       const user = await this.DALInstanse.getUserByUsernameQuery(userName);
@@ -56,5 +56,4 @@ export default class BudgetManagementService {
 
    await this.DALInstanse.updateBalance(amount, receiverUsername);
   }
-
 }
