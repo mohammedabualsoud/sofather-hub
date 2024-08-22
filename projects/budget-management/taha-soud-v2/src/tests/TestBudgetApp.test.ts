@@ -1,9 +1,9 @@
 import assert from "assert";
-import BudgetApp from "./BudgetApp.js";
-
-const app = await BudgetApp.getInstance();
+import BudgetApp from "../app/BudgetApp.js";
 
 async function testBudgetApp() {
+  const app = await BudgetApp.getInstance();
+
   await app.resetUsers();
   assert.strictEqual((await app.getUsers()).length, 0, "Reset failed");
 

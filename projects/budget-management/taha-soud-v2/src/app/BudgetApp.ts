@@ -41,7 +41,7 @@ class BudgetApp {
     );
 
     if (existingUser.rows.length > 0) {
-      throw new Error("User already exists");
+      throw new Error(`User ${userName} already exists`);
     }
 
     await this._db.query(
@@ -57,11 +57,11 @@ class BudgetApp {
     );
 
     if (userResult.rows.length === 0) {
-      throw new Error("User does not exist");
+      throw new Error(`User ${userName} does not exist`);
     }
 
     if (amount <= 0) {
-      throw new Error("Invalid amount");
+      throw new Error("Invalid deposit amount");
     }
 
     const user = userResult.rows[0];
@@ -89,20 +89,20 @@ class BudgetApp {
     );
 
     if (senderResult.rows.length === 0) {
-      throw new Error("Sender does not exist");
+      throw new Error(`Sender "${senderUserName}" does not exist`);
     }
 
     if (receiverResult.rows.length === 0) {
-      throw new Error("Receiver does not exist");
+      throw new Error(`Receiver "${receiverUserName}" does not exist`);
     }
 
     if (amount <= 0) {
-      throw new Error("Invalid amount");
+      throw new Error("Invalid amount. Amount must be greater than zero.");
     }
 
     const sender = senderResult.rows[0];
     if (sender.balance < amount) {
-      throw new Error("Sender has insufficient funds");
+      throw new Error(`Sender "${senderUserName}" has insufficient funds`);
     }
 
     await this._db.query(
@@ -130,7 +130,11 @@ class BudgetApp {
   }
 
   public async resetUsers(): Promise<void> {
-    await this._db.query(`DELETE FROM "user" WHERE true`);
+    if (process.env.NODE_ENV !== "production") {
+      await this._db.query(`DELETE FROM "user" WHERE true`);
+    } else {
+      throw new Error("Cannot reset users in production");
+    }
   }
 }
 
