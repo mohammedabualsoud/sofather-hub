@@ -32,7 +32,7 @@ while (!stop) {
         await BudgetManagement.addUser(username, fname, lname);
         console.log("User added successfully!");
       } catch (error) {
-        console.log(`Error: ${error}`);
+        console.log(`Error: ${error.message}`);
       }
       readlineSync.question("Press Enter to continue...");
       break;
@@ -43,7 +43,7 @@ while (!stop) {
       const depositUsername = readlineSync.question("Enter Username: ");
       const depositAmount = parseFloat(readlineSync.question("Enter Amount: "));
       try {
-        BudgetManagement.deposit(depositUsername, depositAmount);
+       await BudgetManagement.deposit(depositUsername, depositAmount);
         console.log(
           `Deposit successful! ${depositAmount} has been added to ${depositUsername}'s account.`
         );
@@ -64,15 +64,10 @@ while (!stop) {
         readlineSync.question("Enter Amount: ")
       );
 
+      
       try {
-        BudgetManagement.transfer(
-          senderUsername,
-          receiverUsername,
-          transferAmount
-        );
-        console.log(
-          `Transfer successful! ${transferAmount} has been transferred from ${senderUsername} to ${receiverUsername}.`
-        );
+        await BudgetManagement.transfer(senderUsername, receiverUsername, transferAmount);
+         console.log( `Transfer successful! ${transferAmount} has been transferred from ${senderUsername} to ${receiverUsername}.`);
       } catch (error) {
         console.log(`Error: ${error.message}`);
       }
