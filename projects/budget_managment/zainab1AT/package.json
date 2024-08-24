@@ -13,6 +13,7 @@
   "dependencies": {
     "dotenv": "^16.4.5",
     "mysql": "^2.18.1",
+    "promisify": "^0.0.3",
     "readline-sync": "^1.4.10",
     "sofather-hub": "file:"
   },

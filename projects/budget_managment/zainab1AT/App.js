@@ -1,5 +1,6 @@
 import BudgetManagementService from "./BudgetManagementService.js";
 import readlineSync from "readline-sync";
+import { connectToDatabase } from "./mysql.js";
 
 async function main() {
   try {
