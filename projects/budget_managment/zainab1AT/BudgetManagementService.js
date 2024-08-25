@@ -1,3 +1,4 @@
+
 import { con } from "./mysql.js";
 import { promisify } from "util";
 
@@ -104,5 +105,6 @@ export default class BudgetManagementService {
     } catch (err) {
       throw err;
     }
+
   }
 }
