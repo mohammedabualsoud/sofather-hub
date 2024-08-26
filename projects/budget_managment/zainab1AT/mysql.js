@@ -1,4 +1,5 @@
 import mysql from "mysql";
+import util from "util";
 
 const con = mysql.createConnection({
   host: "localhost",
@@ -7,18 +8,14 @@ const con = mysql.createConnection({
   database: "budgetmanagement_db",
 });
 
-function connectToDatabase() {
-  return new Promise((resolve, reject) => {
-    con.connect(function (err) {
-      if (err) {
-        console.error("Error connecting to MySQL:", err);
-        return reject(err);
-      }
-      console.log("MySQL Connected");
-      resolve(con);
-    });
-  });
-}
+con.query = util.promisify(con.query).bind(con);
 
-export { con, connectToDatabase };
+con.connect((err) => {
+  if (err) {
+    console.error("Error connecting to MySQL:", err);
+    process.exit(1);
+  }
+  console.log("MySQL Connected");
+});
 
+export { con };
