@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    /* Target JavaScript version: ES2016 is a good default */
+    "target": "es2016",
+    /* Module system: CommonJS is a good default for Node.js projects */
+    "module": "commonjs",
+    /* Enable strict type checking */
+    "strict": true,
+    /* Allow importing CommonJS modules as if they were ES modules */
+    "esModuleInterop": true,
+    /* Enforce consistent casing in file names */
+    "forceConsistentCasingInFileNames": true,
+    /* Output directory for compiled JavaScript files */
+    "outDir": "./build",
+    /* Generate source maps for debugging */
+    "sourceMap": true,
+    /* Remove comments from compiled JavaScript files */
+    "removeComments": true,
+    /* Root directory of the project */
+    "rootDir": "./src",
+    /* Skip type checking for library files */
+    "skipLibCheck": true
+  },
+  /* Include all files in the src directory and its subdirectories */
+  "include": ["src/**/*"],
+  /* Exclude node_modules and build directories from compilation */
+  "exclude": ["node_modules", "build"]
+}

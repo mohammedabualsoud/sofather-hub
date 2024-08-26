@@ -1,3 +1,4 @@
+
 import { con } from "./mysql.js";
 
 export default class BudgetManagementService {
@@ -96,5 +97,6 @@ export default class BudgetManagementService {
     } catch (err) {
       console.error(err);
     }
+
   }
 }
