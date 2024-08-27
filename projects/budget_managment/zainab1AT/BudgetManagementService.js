@@ -16,17 +16,18 @@ export default class BudgetManagementService {
 
   async addUser(userName, firstName, lastName) {
     try {
-      const results = await con.query(`SELECT * FROM USER WHERE username = ?`, [
+      const selectresults = await con.query(`SELECT * FROM USER WHERE username = ?`, [
         userName,
       ]);
-      if (results.length > 0) {
-        return results[0];
+      if (selectresults.length > 0) {
+        return selectresults[0];
       } else {
         const results = await con.query(
           `INSERT INTO USER (username, firstName, lastName) VALUES (?, ?, ?)`,
           [userName, firstName, lastName]
         );
-        return { id: results.insertId };
+        const newUser = await con.query(`SELECT * FROM USER WHERE username = ?`, [userName]);
+        return newUser[0];
       }
     } catch (err) {
       console.error(err);
@@ -48,8 +49,10 @@ export default class BudgetManagementService {
         `UPDATE USER SET balance = balance + ? WHERE username = ?`,
         [amount, username]
       );
+
     } catch (err) {
-      console.error(err);
+      // console.error(err);
+      throw err;
     }
   }
 
@@ -94,7 +97,8 @@ export default class BudgetManagementService {
         [amount, receiverUsername]
       );
     } catch (err) {
-      console.error(err);
+      // console.error(err);
+      throw err;
     }
   }
 }
