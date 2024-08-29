@@ -1,16 +1,19 @@
 import pkg from "pg";
-const { Pool } = pkg;
-import type { Pool as PoolType } from "pg";
+import type { Pool as PoolType } from "pg"; // Import Pool type separately
 import dotenv from "dotenv";
+import UserDAL from "../models/UserDAL.js";
 
 dotenv.config();
 
+const { Pool } = pkg; // Destructure Pool from the pg module
+
 class BudgetApp {
   private static _instance: BudgetApp | null = null;
-  private _db: PoolType;
+  private _userDAL: UserDAL;
 
   private constructor(pool: PoolType) {
-    this._db = pool;
+    // Use the PoolType here
+    this._userDAL = new UserDAL(pool);
   }
 
   public static async getInstance(): Promise<BudgetApp> {
@@ -35,28 +38,19 @@ class BudgetApp {
     lastName: string,
     balance: number
   ): Promise<void> {
-    const existingUser = await this._db.query(
-      `SELECT * FROM "user" WHERE "userName" = $1`,
-      [userName]
-    );
+    const existingUser = await this._userDAL.getUserByUserName(userName);
 
-    if (existingUser.rows.length > 0) {
+    if (existingUser) {
       throw new Error(`User ${userName} already exists`);
     }
 
-    await this._db.query(
-      `INSERT INTO "user" ("userName", "firstName", "lastName", "balance") VALUES ($1, $2, $3, $4)`,
-      [userName, firstName, lastName, balance]
-    );
+    await this._userDAL.addUser(userName, firstName, lastName, balance);
   }
 
   public async deposit(userName: string, amount: number): Promise<void> {
-    const userResult = await this._db.query(
-      `SELECT * FROM "user" WHERE "userName" = $1`,
-      [userName]
-    );
+    const user = await this._userDAL.getUserByUserName(userName);
 
-    if (userResult.rows.length === 0) {
+    if (!user) {
       throw new Error(`User ${userName} does not exist`);
     }
 
@@ -64,13 +58,8 @@ class BudgetApp {
       throw new Error("Invalid deposit amount");
     }
 
-    const user = userResult.rows[0];
     const newBalance = user.balance + amount;
-
-    await this._db.query(
-      `UPDATE "user" SET "balance" = $1 WHERE "userName" = $2`,
-      [newBalance, userName]
-    );
+    await this._userDAL.updateUserBalance(userName, newBalance);
   }
 
   public async sendMoney(
@@ -78,21 +67,14 @@ class BudgetApp {
     receiverUserName: string,
     amount: number
   ): Promise<void> {
-    const senderResult = await this._db.query(
-      `SELECT * FROM "user" WHERE "userName" = $1`,
-      [senderUserName]
-    );
+    const sender = await this._userDAL.getUserByUserName(senderUserName);
+    const receiver = await this._userDAL.getUserByUserName(receiverUserName);
 
-    const receiverResult = await this._db.query(
-      `SELECT * FROM "user" WHERE "userName" = $1`,
-      [receiverUserName]
-    );
-
-    if (senderResult.rows.length === 0) {
+    if (!sender) {
       throw new Error(`Sender "${senderUserName}" does not exist`);
     }
 
-    if (receiverResult.rows.length === 0) {
+    if (!receiver) {
       throw new Error(`Receiver "${receiverUserName}" does not exist`);
     }
 
@@ -100,38 +82,31 @@ class BudgetApp {
       throw new Error("Invalid amount. Amount must be greater than zero.");
     }
 
-    const sender = senderResult.rows[0];
     if (sender.balance < amount) {
       throw new Error(`Sender "${senderUserName}" has insufficient funds`);
     }
 
-    await this._db.query(
-      `UPDATE "user" SET "balance" = "balance" - $1 WHERE "userName" = $2`,
-      [amount, senderUserName]
+    await this._userDAL.updateUserBalance(
+      senderUserName,
+      sender.balance - amount
     );
-
-    await this._db.query(
-      `UPDATE "user" SET "balance" = "balance" + $1 WHERE "userName" = $2`,
-      [amount, receiverUserName]
+    await this._userDAL.updateUserBalance(
+      receiverUserName,
+      receiver.balance + amount
     );
   }
 
   public async getMostRichUsers(n = 3): Promise<any[]> {
-    const topUsers = await this._db.query(
-      `SELECT * FROM "user" ORDER BY "balance" DESC LIMIT $1`,
-      [n]
-    );
-    return topUsers.rows;
+    return await this._userDAL.getTopUsers(n);
   }
 
   public async getUsers(): Promise<any[]> {
-    const users = await this._db.query(`SELECT * FROM "user"`);
-    return users.rows;
+    return await this._userDAL.getAllUsers();
   }
 
   public async resetUsers(): Promise<void> {
     if (process.env.NODE_ENV !== "production") {
-      await this._db.query(`DELETE FROM "user" WHERE true`);
+      await this._userDAL.deleteAllUsers();
     } else {
       throw new Error("Cannot reset users in production");
     }

@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "npm run build && node build/app/TestBudgetApp.js"
+    "start": "npm run build && node build/tests/TestBudgetApp.test.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5"
