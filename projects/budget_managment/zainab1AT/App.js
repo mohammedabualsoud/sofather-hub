@@ -90,9 +90,9 @@ async function main() {
           console.clear();
           console.log("--- View User Information ---");
           const viewUsername = readlineSync.question("Enter Username: ");
-          const u = await BudgetManagement.getUserByUsername(viewUsername);
+          const user = await BudgetManagement.getUserByUsername(viewUsername);
           try {
-            console.log(u);
+            console.log(user);
           } catch (error) {
             console.log(`Error: ${error.message}`);
           }
