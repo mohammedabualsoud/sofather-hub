@@ -2,8 +2,10 @@ import { getConnection } from "./mysql.js";
 import DAL from "./DAL.js";
 
 export default class BudgetManagementService {
-  con = getConnection();
-  DALInstanse = new DAL(con);
+  constructor(){
+    this.con = getConnection();
+    this.DALInstanse = new DAL(this.con);
+  }
 
   async getUserByUsername(userName) {
       const user = await this.DALInstanse.getUserByUsernameQuery(userName);
