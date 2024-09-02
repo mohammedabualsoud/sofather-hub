@@ -11,20 +11,12 @@ export default class DAL {
     return user;
   }
 
-  async updateBalanceIncrease(amount, username) {
+  async updateBalance(amount, username) {
     await this.con.query(
       `UPDATE USER SET balance = balance + ? WHERE username = ?`,
       [amount, username]
     );
   }
-
-  async updateBalanceDecrease(amount, username) {
-    await this.con.query(
-      `UPDATE USER SET balance = balance - ? WHERE username = ?`,
-      [amount, username]
-    );
-  }
-
   async upsertQuery(userName, firstName, lastName) {
     await this.con.query(
       `INSERT INTO USER (username, firstName, lastName)
