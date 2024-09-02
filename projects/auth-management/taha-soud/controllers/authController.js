@@ -5,18 +5,26 @@ const registerUser = async (req, res) => {
 
   try {
     const user = await User.create({ userName, email, password });
+
+    user.password = undefined;
+
     console.log("User created successfully:", user);
     res.status(201).json({ success: true, data: user });
   } catch (error) {
     console.error("Error during user creation:", error.message);
-    res.status(400).json({ success: false, error: error.message });
+
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ success: false, error: error.message });
+    }
+
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 };
 
 const loginUser = async (req, res) => {
   const { userName, password } = req.body;
   try {
-    const user = await User.findOne({ userName });
+    const user = await User.findOne({ userName }).select("-password");
     if (!user) {
       return res
         .status(401)
@@ -28,9 +36,14 @@ const loginUser = async (req, res) => {
         .status(401)
         .json({ success: false, error: "Invalid Credentials" });
     }
+
+    user.password = undefined;
+
     res.status(200).json({ success: true, data: user });
   } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
+    console.error("Error during login:", error.message);
+
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 };
 
