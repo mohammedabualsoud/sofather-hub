@@ -11,14 +11,6 @@ export default class DAL {
     return user;
   }
 
-  async getBalanceByUsernameQuery(username) {
-    const [balance] = await this.con.query(
-      `SELECT balance FROM USER WHERE username = ?`,
-      [username]
-    );
-    return balance;
-  }
-
   async updateBalanceIncrease(amount, username) {
     await this.con.query(
       `UPDATE USER SET balance = balance + ? WHERE username = ?`,
