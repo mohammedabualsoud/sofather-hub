@@ -45,9 +45,8 @@ export default class BudgetManagementService {
         throw new Error("Insufficient amount!");
       }
 
-      const senderBalance = await this.DALInstanse.getBalanceByUsernameQuery(
-        senderUsername
-      );
+      const user = await this.getUserByUsernameQuery(username);
+      const senderBalance = user.balance;
 
       if (senderBalance < amount) {
         throw new Error("Insufficient balance!");
