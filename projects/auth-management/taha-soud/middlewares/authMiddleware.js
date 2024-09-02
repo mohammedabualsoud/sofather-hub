@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const User = require("../models/user.js");
 
 const basicAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;

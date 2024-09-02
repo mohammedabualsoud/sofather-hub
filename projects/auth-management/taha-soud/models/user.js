@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const ROLES = require("../constants/roles");
+const ROLES = require("../constants/roles.js");
 
 const userSchema = new mongoose.Schema({
   userName: {

@@ -14,3 +14,8 @@ const isUser = (req, res, next) => {
   }
   next();
 };
+
+module.exports = {
+  isAdmin,
+  isUser,
+};
