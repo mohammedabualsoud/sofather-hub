@@ -4,7 +4,6 @@ const { registerUser, loginUser } = require("../controllers/authController");
 const { basicAuth } = require("../middlewares/authMiddleware");
 const User = require("../models/user");
 
-// Mock the User model
 const mockCreate = (User.create = async function (userDetails) {
   if (!userDetails.email || !userDetails.password || !userDetails.userName) {
     throw new Error("User validation failed");

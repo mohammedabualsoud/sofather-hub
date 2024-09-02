@@ -1,6 +1,5 @@
 const User = require("../models/user");
 
-// Register a new user
 const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
 
@@ -14,7 +13,6 @@ const registerUser = async (req, res) => {
   }
 };
 
-// Login a user
 const loginUser = async (req, res) => {
   const { userName, password } = req.body;
   try {

@@ -5,21 +5,17 @@ const authRoutes = require("./routes/authRoutes");
 const rateLimit = require("express-rate-limit");
 const session = require("express-session");
 
-// Load environment variables
 dotenv.config();
 
-// Connect to the database
 connectDB();
 
 const app = express();
 
-// Body parser middleware
 app.use(express.json());
 
-// Define a rate limiter
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: "Too many requests from this IP, please try again later.",
 });
 
@@ -34,7 +30,6 @@ app.use(
   })
 );
 
-// API routes
 app.use("/api", authRoutes);
 
 module.exports = app;

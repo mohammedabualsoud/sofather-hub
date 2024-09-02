@@ -21,8 +21,8 @@ const basicAuth = async (req, res, next) => {
     return res.status(401).json({ message: "Invalid email or password" });
   }
 
-  req.user = user; // Store user info in req.user for later use
-  next(); // Move to the next middleware or route handler
+  req.user = user;
+  next();
 };
 
 module.exports = { basicAuth };
