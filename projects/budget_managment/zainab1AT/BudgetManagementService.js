@@ -27,7 +27,7 @@ export default class BudgetManagementService {
       if (amount <= 0) {
         throw new Error("Insufficient amount!");
       }
-      await this.DALInstanse.updateBalanceIncrease(amount, username); 
+      await this.DALInstanse.updateBalance(amount, username); 
   }
 
   async transfer(senderUsername, receiverUsername, amount) {
@@ -52,8 +52,8 @@ export default class BudgetManagementService {
         throw new Error("Insufficient balance!");
       }
 
-      await this.DALInstanse.updateBalanceDecrease(amount, senderUsername);
+   await this.DALInstanse.updateBalance(-amount, senderUsername);
 
-      await this.DALInstanse.updateBalanceIncrease(amount, receiverUsername);
+   await this.DALInstanse.updateBalance(amount, receiverUsername);
   }
 }
