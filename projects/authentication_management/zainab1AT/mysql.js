@@ -26,4 +26,3 @@ const getConnection = () => {
   return con;
 };
 export { getConnection };
-
