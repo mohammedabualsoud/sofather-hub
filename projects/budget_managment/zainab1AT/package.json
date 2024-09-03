@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.5",
+    "mysql": "^2.18.1",
     "readline-sync": "^1.4.10",
     "sofather-hub": "file:"
   },

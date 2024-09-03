@@ -1,53 +1,59 @@
-import User from "./User.js";
+import { getConnection } from "./mysql.js";
+import DAL from "./DAL.js";
+
 export default class BudgetManagementService {
-  constructor() {
-    this.users = new Map();
-  }
-  getUserByUsername(userName) {
-    const user = this.users.get(userName);
-    if (user) return user;
-    else throw new Error("This User not found !");
+  constructor(){
+    this.con = getConnection();
+    this.DALInstanse = new DAL(this.con);
   }
 
-  addUser(userName, firstName, lastName) {
-    const user = new User(userName, firstName, lastName);
-    if (this.users.get(userName)) throw new Error("User already exists");
-
-    this.users.set(userName, user);
-    return user;
+  async getUserByUsername(userName) {
+      const user = await this.DALInstanse.getUserByUsernameQuery(userName);
+      return user;
   }
 
-  deposit(username, amount) {
-    const user = this.users.get(username);
-
-    if (!user) 
-      throw new Error("User not found!");
-
-    if (typeof amount !== "number" || amount <= 0) 
-      throw new Error("Invalid amount. Please enter a positive number.");
-
-    user.setBalance(user.getBalance() + amount);
+  async addUser(userName, firstName, lastName) {
+      await this.DALInstanse.upsertQuery(userName, firstName, lastName);
+      const user = await this.DALInstanse.getUserByUsernameQuery(userName);
+      return user;
   }
 
-  transfer(senderUsername, receiverUsername, amount) {
-    const sender = this.users.get(senderUsername);
-    if (!sender) 
-      throw new Error("Sender not found!");
+  async deposit(username, amount) {
+      const user = await this.DALInstanse.getUserByUsernameQuery(username);
 
-    const receiver = this.users.get(receiverUsername);
-    if (!receiver) 
-      throw new Error("Receiver not found!");
+      if (!user) {
+        throw new Error("User not found!");
+      }
+      if (amount <= 0) {
+        throw new Error("Insufficient amount!");
+      }
+      await this.DALInstanse.updateBalance(amount, username); 
+  }
 
-    if (typeof amount !== "number") 
-      throw new Error("Please enter a valid amount.");
+  async transfer(senderUsername, receiverUsername, amount) {
+      const sender = await this.DALInstanse.getUserByUsernameQuery(senderUsername);
+      if (!sender) {
+        throw new Error("Sender not found!");
+      }
 
-    if (amount < 0) 
-      throw new Error("Please enter a valid amount.");
+      const receiver = await this.DALInstanse.getUserByUsernameQuery(receiverUsername);
+      if (!receiver) {
+        throw new Error("Receiver not found!");
+      }
 
-    if (amount > sender.getBalance()) 
-     throw new Error("Insufficient balance for the transfer.");
+      if (amount <= 0) {
+        throw new Error("Insufficient amount!");
+      }
 
-    sender.setBalance(sender.getBalance() - amount);
-    receiver.setBalance(receiver.getBalance() + amount);
+      const user = await this.getUserByUsernameQuery(username);
+      const senderBalance = user.balance;
+
+      if (senderBalance < amount) {
+        throw new Error("Insufficient balance!");
+      }
+
+   await this.DALInstanse.updateBalance(-amount, senderUsername);
+
+   await this.DALInstanse.updateBalance(amount, receiverUsername);
   }
 }
