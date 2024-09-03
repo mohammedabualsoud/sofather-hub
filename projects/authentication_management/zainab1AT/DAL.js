@@ -10,6 +10,11 @@ export default class DAL {
     return user;
   }
 
+  async allUsers() {
+    const users = await this.con.query("SELECT * FROM USER ");
+    return users;
+  }
+
   async addUser(username, email, password, role) {
     await this.con.query(
       `INSERT INTO USER(username,email,password,role)
