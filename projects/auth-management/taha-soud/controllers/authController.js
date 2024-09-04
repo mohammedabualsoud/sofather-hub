@@ -1,24 +1,59 @@
+const jwt = require("jsonwebtoken");
 const User = require("../models/user.js");
 
-// Register a new user
+const generateToken = (user) => {
+  return jwt.sign(
+    { id: user._id, userName: user.userName, role: user.role },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1h",
+    }
+  );
+};
+
 const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
 
+  if (!userName || !email || !password) {
+    return res.status(400).json({
+      success: false,
+      message: "All fields (username, email, password) are required.",
+    });
+  }
+
   try {
+    const existingUser = await User.findOne({ $or: [{ userName }, { email }] });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "User with this username or email already exists.",
+      });
+    }
+
     const user = await User.create({ userName, email, password });
 
-    // Remove the password from the response
     user.password = undefined;
 
-    console.log("User created successfully:", user);
-    res.status(201).json({ success: true, data: user });
+    const token = generateToken(user);
+
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully.",
+      data: {
+        token,
+        user: { userName: user.userName, email: user.email, role: user.role },
+      },
+    });
   } catch (error) {
     console.error("Error during user creation:", error.message);
-    res.status(400).json({ success: false, error: error.message });
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error: Please try again later.",
+      error: error.message,
+    });
   }
 };
 
-// Login a user
 const loginUser = async (req, res) => {
   const { userName, password } = req.body;
   try {
@@ -27,23 +62,31 @@ const loginUser = async (req, res) => {
     if (!user) {
       return res
         .status(401)
-        .json({ success: false, error: "Invalid Credentials" });
+        .json({ success: false, error: "Invalid userName" });
     }
 
-    // Check if the provided password matches the stored hashed password
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
       return res
         .status(401)
-        .json({ success: false, error: "Invalid Credentials" });
+        .json({ success: false, error: "Invalid Password" });
     }
 
-    // Ensure password is not exposed in the response
     user.password = undefined;
 
-    res.status(200).json({ success: true, data: user });
+    const token = generateToken(user);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        token,
+        user: { userName: user.userName, email: user.email, role: user.role },
+      },
+    });
   } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
+    console.error("Error during login:", error.message);
+
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 };
 
