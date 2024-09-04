@@ -4,45 +4,65 @@ const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
 
   try {
+    const existingUser = await User.findOne({ $or: [{ userName }, { email }] });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "User with this username or email already exists.",
+      });
+    }
+
     const user = await User.create({ userName, email, password });
 
     user.password = undefined;
 
-    console.log("User created successfully:", user);
-    res.status(201).json({ success: true, data: user });
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully.",
+      data: {
+        userName: user.userName,
+        email: user.email,
+      },
+    });
   } catch (error) {
     console.error("Error during user creation:", error.message);
 
     if (error.name === "ValidationError") {
-      return res.status(400).json({ success: false, error: error.message });
+      return res.status(400).json({
+        success: false,
+        message: "Validation error: Please check your input.",
+        error: error.message,
+      });
     }
 
-    res.status(500).json({ success: false, error: "Internal Server Error" });
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error: Please try again later.",
+      error: error.message,
+    });
   }
 };
 
 const loginUser = async (req, res) => {
-  const { userName, password } = req.body;
   try {
-    const user = await User.findOne({ userName });
-    if (!user) {
-      return res
-        .status(401)
-        .json({ success: false, error: "Invalid Credentials" });
-    }
+    const user = req.user;
 
-    const isMatch = await user.matchPassword(password);
-    if (!isMatch) {
-      return res
-        .status(401)
-        .json({ success: false, error: "Invalid Credentials" });
-    }
-
-    res.status(200).json({ success: true, data: user });
+    res.status(200).json({
+      success: true,
+      message: "Login successful.",
+      data: {
+        userName: user.userName,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (error) {
     console.error("Error during login:", error.message);
-
-    res.status(500).json({ success: false, error: "Internal Server Error" });
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error: Please try again later.",
+      error: error.message,
+    });
   }
 };
 

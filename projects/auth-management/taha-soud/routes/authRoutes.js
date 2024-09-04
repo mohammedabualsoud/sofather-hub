@@ -7,7 +7,7 @@ const User = require("../models/user");
 const router = express.Router();
 
 router.post("/register", registerUser);
-router.post("/login", loginUser);
+router.post("/login", basicAuth, loginUser);
 
 router.get("/protected", basicAuth, (req, res) => {
   res.status(200).json({
