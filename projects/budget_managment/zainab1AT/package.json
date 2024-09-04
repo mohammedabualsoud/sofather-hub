@@ -1,0 +1,22 @@
+{
+  "name": "sofather-hub",
+  "version": "1.0.0",
+  "description": "- [Prerequisite](#prerequisite)\r - [About the Project](#about-the-project)\r - [Directory Structure](#directory-structure)\r - [Contributing](#contributing)\r   - [Contribution Guidelines](#contribution-guidelines)\r - [Getting Started](#getting-started)\r - [Community](#community)",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "mysql": "^2.18.1",
+    "readline-sync": "^1.4.10",
+    "sofather-hub": "file:"
+  },
+  "devDependencies": {
+    "vitest": "^2.0.5"
+  }
+}
