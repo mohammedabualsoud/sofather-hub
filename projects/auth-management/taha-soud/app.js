@@ -1,13 +1,10 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const rateLimit = require("express-rate-limit");
 const session = require("express-session");
 
 dotenv.config();
-
-connectDB();
 
 const app = express();
 
