@@ -1,18 +1,17 @@
 import pkg from "pg";
-import type { Pool as PoolType } from "pg"; // Import Pool type separately
+import type { Pool as PoolType } from "pg";
 import dotenv from "dotenv";
 import UserDAL from "../models/UserDAL.js";
 
 dotenv.config();
 
-const { Pool } = pkg; // Destructure Pool from the pg module
+const { Pool } = pkg;
 
 class BudgetApp {
   private static _instance: BudgetApp | null = null;
   private _userDAL: UserDAL;
 
   private constructor(pool: PoolType) {
-    // Use the PoolType here
     this._userDAL = new UserDAL(pool);
   }
 

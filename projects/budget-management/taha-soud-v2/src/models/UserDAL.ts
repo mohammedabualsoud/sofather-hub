@@ -1,5 +1,6 @@
 import pkg from "pg";
-import type { Pool as PoolType } from "pg"; // Import the Pool type
+import type { Pool as PoolType } from "pg";
+import { User } from "./User";
 
 const { Pool } = pkg;
 
@@ -10,12 +11,12 @@ class UserDAL {
     this._db = pool;
   }
 
-  public async getUserByUserName(userName: string): Promise<any> {
+  public async getUserByUserName(userName: string): Promise<User | null> {
     const result = await this._db.query(
       `SELECT * FROM "user" WHERE "userName" = $1`,
       [userName]
     );
-    return result.rows[0];
+    return result.rows[0] || null;
   }
 
   public async addUser(
@@ -32,15 +33,15 @@ class UserDAL {
 
   public async updateUserBalance(
     userName: string,
-    newBalance: number
+    amount: number
   ): Promise<void> {
     await this._db.query(
-      `UPDATE "user" SET "balance" = $1 WHERE "userName" = $2`,
-      [newBalance, userName]
+      `UPDATE "user" SET "balance" = "balance" + $1 WHERE "userName" = $2`,
+      [amount, userName]
     );
   }
 
-  public async getTopUsers(limit: number): Promise<any[]> {
+  public async getTopUsers(limit: number): Promise<User[]> {
     const result = await this._db.query(
       `SELECT * FROM "user" ORDER BY "balance" DESC LIMIT $1`,
       [limit]
@@ -48,7 +49,7 @@ class UserDAL {
     return result.rows;
   }
 
-  public async getAllUsers(): Promise<any[]> {
+  public async getAllUsers(): Promise<User[]> {
     const result = await this._db.query(`SELECT * FROM "user"`);
     return result.rows;
   }
