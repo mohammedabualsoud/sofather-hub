@@ -1,0 +1,17 @@
+{
+  "name": "budget-management",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build",
+    "test": "npm run build && node build/tests/TestBudgetApp.test.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.6",
+    "typescript": "^5.1.3"
+  }
+}
