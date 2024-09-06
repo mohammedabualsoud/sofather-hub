@@ -56,5 +56,6 @@ export default class BudgetManagementService {
       await this.DALInstanse.updateBalance(-amount, senderUsername);
 
       await this.DALInstanse.updateBalance(amount, receiverUsername);
+
   }
 }
