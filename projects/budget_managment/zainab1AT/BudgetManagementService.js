@@ -2,11 +2,12 @@ import { getConnection } from "./mysql.js";
 import DAL from "./DAL.js";
 
 export default class BudgetManagementService {
+
   constructor(){
     this.con = getConnection();
     this.DALInstanse = new DAL(this.con);
   }
-
+  
   async getUserByUsername(userName) {
       const user = await this.DALInstanse.getUserByUsernameQuery(userName);
       return user;
@@ -52,8 +53,9 @@ export default class BudgetManagementService {
         throw new Error("Insufficient balance!");
       }
 
-   await this.DALInstanse.updateBalance(-amount, senderUsername);
+      await this.DALInstanse.updateBalance(-amount, senderUsername);
 
-   await this.DALInstanse.updateBalance(amount, receiverUsername);
+      await this.DALInstanse.updateBalance(amount, receiverUsername);
+
   }
 }

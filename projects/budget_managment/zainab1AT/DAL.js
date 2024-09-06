@@ -17,6 +17,7 @@ export default class DAL {
       [amount, username]
     );
   }
+
   async upsertQuery(userName, firstName, lastName) {
     await this.con.query(
       `INSERT INTO USER (username, firstName, lastName)
