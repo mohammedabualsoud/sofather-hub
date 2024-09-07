@@ -3,6 +3,9 @@ import bcrypt from "bcrypt";
 import DAL from "./DAL.js";
 import { getConnection } from "./mysql.js";
 
+const testtttttttttttttttttt=0;
+
+
 const router = express.Router();
 const con = getConnection();
 const DALInstance = new DAL(con);
