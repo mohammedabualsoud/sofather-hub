@@ -9,6 +9,7 @@ export default class DAL {
     );
     return user;
   }
+  
 
   async allUsers() {
     const users = await this.con.query("SELECT * FROM USER ");
