@@ -8,6 +8,7 @@
     "test": "npm run build && node build/tests/TestBudgetApp.test.js"
   },
   "dependencies": {
+    "budget-management": "file:",
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
