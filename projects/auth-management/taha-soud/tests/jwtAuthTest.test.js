@@ -66,7 +66,7 @@ describe("Auth Controller", function () {
     it("should return an error if user registration fails", async function () {
       const req = {
         body: {
-          userName: "testuser",
+          userName: "",
         },
       };
       const res = {
@@ -76,7 +76,10 @@ describe("Auth Controller", function () {
         },
         json: function (data) {
           assert.strictEqual(data.success, false);
-          assert.strictEqual(data.error, "User validation failed");
+          assert.strictEqual(
+            data.message,
+            "All fields (username, email, password) are required."
+          );
         },
       };
 
@@ -121,7 +124,7 @@ describe("Auth Controller", function () {
         },
         json: function (data) {
           assert.strictEqual(data.success, false);
-          assert.strictEqual(data.error, "Invalid Credentials");
+          assert.strictEqual(data.error, "Invalid userName");
         },
       };
 

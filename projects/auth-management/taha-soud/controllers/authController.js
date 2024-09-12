@@ -31,7 +31,6 @@ const registerUser = async (req, res) => {
     }
 
     const user = await User.create({ userName, email, password });
-
     user.password = undefined;
 
     const token = generateToken(user);
@@ -46,6 +45,15 @@ const registerUser = async (req, res) => {
     });
   } catch (error) {
     console.error("Error during user creation:", error.message);
+
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        success: false,
+        message: "User validation failed",
+        error: error.message,
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: "Internal Server Error: Please try again later.",
