@@ -1,0 +1,20 @@
+# Build output
+/build/
+
+# Node modules (if applicable)
+/node_modules/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Environment files
+.env
+
+# Logs
+*.log
+
+# Mac system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
