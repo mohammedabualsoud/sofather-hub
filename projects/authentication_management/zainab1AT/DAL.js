@@ -9,7 +9,7 @@ export default class DAL {
     );
     return user;
   }
-  
+
 
   async allUsers() {
     const users = await this.con.query("SELECT * FROM USER ");
@@ -17,13 +17,6 @@ export default class DAL {
   }
 
   async addUser(username, email, password, role) {
-    await this.con.query(
-      `INSERT INTO USER(username,email,password,role)
-       VALUES(?,?,?,?)
-            ON DUPLICATE KEY UPDATE
-            email = VALUES(email),
-            role = VALUES(role)`,
-      [username, email, password, role]
-    );
+      await this.con.query("INSERT INTO USER (username,email,password,role) VALUES (?,?,?,?)",[username,email,password,role,]);
   }
 }

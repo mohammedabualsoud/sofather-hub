@@ -11,8 +11,11 @@ router.post("/signup", async (req, res) => {
   const { username, email, password, role } = req.body;
   const hashedPassword = await bcrypt.hash(password, 12);
   try {
-    await DALInstance.addUser(username, email, hashedPassword, role);
-    res.status(201).json({ message: "User registered successfully" });
+    const user = await DALInstance.findByUsername(username);
+    if (!user) {
+      await DALInstance.addUser(username, email, hashedPassword, role);
+      res.status(201).json({ message: "User registered successfully" });
+    } else res.status(500).json({ message: "Registration faild" });
   } catch (error) {
     res.status(500).json({ error: "Registration failed" });
   }

@@ -7,7 +7,6 @@ dotenv.config();
 let con;
 
 const getConnection = () => {
-  console.log("Creating new database connection");
   con = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
