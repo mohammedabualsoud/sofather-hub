@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.js");
+const blacklistedTokens = new Set();
 
 const generateToken = (user) => {
   return jwt.sign(
@@ -9,6 +10,12 @@ const generateToken = (user) => {
       expiresIn: "1h",
     }
   );
+};
+
+const logOut = async (req, res) => {
+  const token = req.header("Authorization")?.replace("Bearer ", "");
+  blacklistedTokens.add(token);
+  res.status(200).json({ success: true, message: "Logged out successfully." });
 };
 
 const registerUser = async (req, res) => {
@@ -101,4 +108,6 @@ const loginUser = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  logOut,
+  blacklistedTokens,
 };

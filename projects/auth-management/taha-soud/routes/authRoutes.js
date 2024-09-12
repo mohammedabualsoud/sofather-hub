@@ -1,5 +1,9 @@
 const express = require("express");
-const { registerUser, loginUser } = require("../controllers/authController.js");
+const {
+  registerUser,
+  loginUser,
+  logOut,
+} = require("../controllers/authController.js");
 const { verifyToken } = require("../middlewares/jwtMiddleware.js");
 const { isAdmin, isUser } = require("../middlewares/roleMiddleware.js");
 const User = require("../models/user");
@@ -7,13 +11,16 @@ const User = require("../models/user");
 const router = express.Router();
 
 router.post("/register", registerUser);
-router.post("/login", verifyToken, loginUser);
+
+router.post("/login", loginUser);
 
 router.get("/protected", verifyToken, (req, res) => {
   res.status(200).json({
     message: `Welcome ${req.user.userName}, you have accessed a protected route!`,
   });
 });
+
+router.post("/logout", verifyToken, logOut);
 
 router.get("/admin", verifyToken, isAdmin, (req, res) => {
   res.status(200).json({
