@@ -2,13 +2,14 @@ import express from "express";
 import bcrypt from "bcrypt";
 import DAL from "./DAL.js";
 import { getConnection } from "./mysql.js";
-
 const router = express.Router();
 const con = getConnection();
 const DALInstance = new DAL(con);
+import basicAuth from "./authMiddleware.js";
 
-router.post("/signup", async (req, res) => {
-  const { username, email, password, role } = req.body;
+router.post("/signup",basicAuth, async (req, res) => {
+  const { username, password } = req.auth;
+  const { email, role } = req.body;
   const hashedPassword = await bcrypt.hash(password, 12);
   try {
     const user = await DALInstance.findByUsername(username);
@@ -21,8 +22,8 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
+router.post("/login",basicAuth, async (req, res) => {
+  const { username, password } = req.auth;
   try {
     const user = await DALInstance.findByUsername(username);
     if (user) {
