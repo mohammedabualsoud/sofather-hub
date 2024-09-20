@@ -2,7 +2,6 @@ const express = require("express");
 const dotenv = require("dotenv");
 const authRoutes = require("./routes/authRoutes");
 const rateLimit = require("express-rate-limit");
-const session = require("express-session");
 
 dotenv.config();
 
@@ -17,15 +16,6 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
-
-app.use(
-  session({
-    secret: process.env.SECRET_KEY,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true, httpOnly: true, maxAge: 60000 },
-  })
-);
 
 app.use("/api", authRoutes);
 

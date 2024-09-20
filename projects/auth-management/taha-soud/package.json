@@ -1,37 +1,30 @@
 {
-  "name": "auth-management",
+  "name": "taha-soud",
   "version": "1.0.0",
-  "description": "- [Prerequisite](#prerequisite)\r - [About the Project](#about-the-project)\r - [Directory Structure](#directory-structure)\r - [Contributing](#contributing)\r   - [Contribution Guidelines](#contribution-guidelines)\r - [Getting Started](#getting-started)\r - [Community](#community)",
-  "main": "server.js",
+  "main": "app.js",
+  "directories": {
+    "test": "tests"
+  },
   "scripts": {
     "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/taha-soud/sofather-hub.git"
+    "dev": "nodemon server.js",
+    "test": "mocha"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/taha-soud/sofather-hub/issues"
-  },
-  "homepage": "https://github.com/taha-soud/sofather-hub#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
-    "ejs": "^3.1.10",
     "express": "^4.19.2",
     "express-rate-limit": "^7.4.0",
     "express-session": "^1.18.0",
-    "mongoose": "^8.5.4",
-    "nodemon": "^3.1.4"
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.6.0"
   },
   "devDependencies": {
-    "mocha": "^10.7.3"
+    "nodemon": "^3.1.4"
   },
-  "directories": {
-    "test": "tests"
-  }
+  "description": ""
 }

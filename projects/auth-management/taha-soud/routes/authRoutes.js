@@ -1,28 +1,35 @@
 const express = require("express");
-const { registerUser, loginUser } = require("../controllers/authController.js");
-const { basicAuth } = require("../middlewares/authMiddleware.js");
+const {
+  registerUser,
+  loginUser,
+  logOut,
+} = require("../controllers/authController.js");
+const { verifyToken } = require("../middlewares/jwtMiddleware.js");
 const { isAdmin, isUser } = require("../middlewares/roleMiddleware.js");
 const User = require("../models/user");
 
 const router = express.Router();
 
 router.post("/register", registerUser);
-router.post("/login", basicAuth, loginUser);
 
-router.get("/protected", basicAuth, (req, res) => {
+router.post("/login", loginUser);
+
+router.get("/protected", verifyToken, (req, res) => {
   res.status(200).json({
     message: `Welcome ${req.user.userName}, you have accessed a protected route!`,
   });
 });
 
-router.get("/admin", basicAuth, isAdmin, (req, res) => {
+router.post("/logout", verifyToken, logOut);
+
+router.get("/admin", verifyToken, isAdmin, (req, res) => {
   res.status(200).json({
     success: true,
     message: `Welcome admin ${req.user.userName}!`,
   });
 });
 
-router.get("/admin/:userName", basicAuth, isAdmin, async (req, res) => {
+router.get("/admin/:userName", verifyToken, isAdmin, async (req, res) => {
   try {
     const user = await User.findOne({ userName: req.params.userName });
     if (!user) {
@@ -36,7 +43,7 @@ router.get("/admin/:userName", basicAuth, isAdmin, async (req, res) => {
   }
 });
 
-router.get("/user", basicAuth, isUser, (req, res) => {
+router.get("/user", verifyToken, isUser, (req, res) => {
   res.status(200).json({
     success: true,
     message: `Welcome user ${req.user.userName}!`,
