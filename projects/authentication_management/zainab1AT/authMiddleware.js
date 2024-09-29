@@ -1,5 +1,10 @@
 
-export default function basicAuth(req, res, next) {
+import DAL from "./DAL.js";
+import { getConnection } from "./mysql.js";
+const con = getConnection();
+const DALInstance = new DAL(con);
+
+export default async function basicAuth(req, res, next) {
 
     const authHeader = req.headers.authorization; 
 
@@ -14,7 +19,7 @@ export default function basicAuth(req, res, next) {
       if (!username || !password) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
-    
-      req.auth = { username, password };
-      next(); 
+
+        req.auth = { username, password};
+        next();
 }
