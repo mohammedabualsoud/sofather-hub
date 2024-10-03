@@ -1,12 +1,13 @@
 import express from "express";
-import bcrypt from "bcrypt";
-import DAL from "./DAL.js";
-import { getConnection } from "./mysql.js";
+import dotenv from 'dotenv'; 
 const router = express.Router();
-const con = getConnection();
-const DALInstance = new DAL(con);
-import basicAuth from "./authMiddleware.js";
+import {basicAuth} from "./authMiddleware.js";
 import userService from "./userService.js";
+import jwt from 'jsonwebtoken';
+
+dotenv.config();
+
+const SECRET = process.env.JWT_SECRET;
 
 router.post("/signup", basicAuth, async (req, res) => {
   const { username, password } = req.auth;
@@ -25,7 +26,9 @@ router.post("/login", basicAuth, async (req, res) => {
 
   try {
     await userService.authenticateUser(username, password);
-    res.status(200).json({ message: "User logged in successfully" });
+    const token = jwt.sign({username: username,},SECRET,{expiresIn:'24h'});
+   
+    res.status(200).json({Token: token, message: "User logged in successfully" });
   } catch (error) {
     res.status(401).json({ message: error.message });
   }

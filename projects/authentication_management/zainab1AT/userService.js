@@ -35,16 +35,12 @@ const authenticateUser = async (username, password) => {
     return true;
   };
 
-  const allUsers = async (username, password) => {
+  const allUsers = async (username) => {
 
         const user = await DALInstance.findByUsername(username);
     
         if (!user) {
           return res.status(404).json({ message: "User not found" });
-        }
-    
-        if (!isPasswordValid(password, user.password)) {
-          return res.status(401).json({ message: "Invalid username or password" });
         }
     
         if (user.role !== "admin") {
