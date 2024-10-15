@@ -1,16 +1,9 @@
 import express from "express";
-import bcrypt from "bcrypt";
-import { getConnection } from "./mysql.js";
-import DAL from "./DAL.js";
-import basicAuth from "./authMiddleware.js";
-import userService from "./userService.js";
+import userService from "../services/userService.js";
 
 const router = express.Router();
-const con = getConnection();
-const DALInstance = new DAL(con);
 
-
-router.get("/all",basicAuth, async (req, res) => {
+export const allUsers = async (req, res) => {
   const { username, password } = req.auth;
 
   try {
@@ -19,6 +12,8 @@ router.get("/all",basicAuth, async (req, res) => {
   } catch (error) {
     res.status(401).json({ message: error.message });
   }
-});
+};
+
+
 
 export default router;

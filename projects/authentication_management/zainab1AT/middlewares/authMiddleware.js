@@ -1,6 +1,8 @@
 
-import DAL from "./DAL.js";
-import { getConnection } from "./mysql.js";
+import DAL from "../config/DAL.js";
+import { getConnection } from "../config/mysql.js";
+import bcrypt from "bcrypt";
+
 const con = getConnection();
 const DALInstance = new DAL(con);
 
@@ -20,6 +22,22 @@ export default async function basicAuth(req, res, next) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
-        req.auth = { username, password};
-        next();
+    req.auth = { username, password };
+
+    if (req.method === 'POST' && req.path === '/login') {
+        const user = await DALInstance.findByUsername(username);
+        if (!user) {
+            return res.status(401).json({ message: "Invalid username or password" });
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: "Invalid username or password" });
+        }
+
+        req.user = user;
+    }
+
+    next();
 }
+

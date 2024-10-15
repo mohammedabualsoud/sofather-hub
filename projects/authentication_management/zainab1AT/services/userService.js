@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
-import DAL from "./DAL.js";
-import { getConnection } from "./mysql.js";
+import DAL from "../config/DAL.js";
+import { getConnection } from "../config/mysql.js";
 
 const con = getConnection();
 const DALInstance = new DAL(con);
@@ -21,19 +21,6 @@ async function isPasswordValid(pass, hashPass) {
     return await bcrypt.compare(pass, hashPass);
   }
 
-const authenticateUser = async (username, password) => {
-    const user = await DALInstance.findByUsername(username);
-  
-    if (!user) {
-      throw new Error("Invalid username or password");
-    }
-    
-    if (!isPasswordValid(password, user.password)) {
-      throw new Error("Invalid username or password");
-    }
-  
-    return true;
-  };
 
   const allUsers = async (username, password) => {
 
@@ -55,4 +42,4 @@ const authenticateUser = async (username, password) => {
      
   };
 
-export default { registerUser, authenticateUser, allUsers };
+export default { registerUser, allUsers };
