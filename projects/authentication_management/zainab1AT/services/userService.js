@@ -17,29 +17,5 @@ const registerUser = async (username, password, email, role) => {
   await DALInstance.addUser(username, email, hashedPassword, role);
 };
 
-async function isPasswordValid(pass, hashPass) {
-    return await bcrypt.compare(pass, hashPass);
-  }
 
-
-  const allUsers = async (username, password) => {
-
-        const user = await DALInstance.findByUsername(username);
-    
-        if (!user) {
-          return res.status(404).json({ message: "User not found" });
-        }
-    
-        if (!isPasswordValid(password, user.password)) {
-          return res.status(401).json({ message: "Invalid username or password" });
-        }
-    
-        if (user.role !== "admin") {
-          return res.status(403).json({ message: "Access denied: Admins only" });
-        }
-    
-        return await DALInstance.allUsers();
-     
-  };
-
-export default { registerUser, allUsers };
+export default { registerUser };

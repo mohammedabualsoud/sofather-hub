@@ -2,8 +2,7 @@
 import userService from "../services/userService.js";
 
 export const signup = async (req, res) => {
-  const { username, password } = req.auth;
-  const { email, role } = req.body;
+  const {username, password , email, role } = req.body;
 
   try {
     await userService.registerUser(username, password, email, role);
@@ -19,6 +18,14 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   try {
     res.status(200).json({ message: "User logged in successfully", user: req.user });
+  } catch (error) {
+    res.status(401).json({ message: error.message });
+  }
+};
+
+export const allUsers = async (req, res) => {
+  try {
+    res.status(200).json({ users: users });
   } catch (error) {
     res.status(401).json({ message: error.message });
   }

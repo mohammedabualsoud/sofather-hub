@@ -4,8 +4,9 @@ import { signup, login } from "../controllers/authController.js";
 
 const router = express.Router();
 
-router.post("/signup", basicAuth, signup);
+router.post("/signup", signup);
 router.post("/login", basicAuth, login);
+router.post("/users", basicAuth, allUsers);
 
 export default router;
 

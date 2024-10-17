@@ -22,8 +22,6 @@ export default async function basicAuth(req, res, next) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
-    req.auth = { username, password };
-
     if (req.method === 'POST' && req.path === '/login') {
         const user = await DALInstance.findByUsername(username);
         if (!user) {
@@ -36,6 +34,25 @@ export default async function basicAuth(req, res, next) {
         }
 
         req.user = user;
+    }
+
+
+    else if (req.method === 'POST' && req.path === '/users') {
+        const user = await DALInstance.findByUsername(username);
+    
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+    
+        if (! await bcrypt.compare(password, user.password)) {
+          return res.status(401).json({ message: "Invalid username or password" });
+        }
+    
+        if (user.role !== "admin") {
+          return res.status(403).json({ message: "Access denied: Admins only" });
+        }
+    
+        return await DALInstance.allUsers();
     }
 
     next();
