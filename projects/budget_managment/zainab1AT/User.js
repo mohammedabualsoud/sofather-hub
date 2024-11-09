@@ -1,9 +1,14 @@
 export default class User {
-  constructor(userName, firstName, lastName) {
-    this.userName = userName;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.balance = 0;
+  #userName;
+  #firstName;
+  #lastName;
+  #balance;
+
+   constructor(userName, firstName, lastName) {
+    this.#userName = userName;
+    this.#firstName = firstName;
+    this.#lastName = lastName;
+    this.#balance = 0;
   }
 
   setBalance(newBalance) {
